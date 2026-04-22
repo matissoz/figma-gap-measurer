@@ -124,6 +124,14 @@ When a project defines custom CSS classes (e.g. \`.container { padding: 0 32px; 
 - Always verify computed styles when mixing custom CSS and Tailwind — shorthand declarations are a common source of "silent" overrides
 - **Before implementing**: read the project's global CSS and Tailwind config to find existing container/layout classes, their max-widths, and padding values. Don't hardcode container dimensions — derive them from the project's own classes. The Figma design's frame widths may differ from the project's container max-width; what matters is that the final rendered spacing (centering margin + container padding + section padding) totals to match the Figma spec.
 
+### Never guess design values
+When Figma API data is unavailable (rate limits, missing nodes, partial inspection), NEVER guess or approximate typography sizes, colors, spacing, or other design values. Instead:
+- **Be explicit** about which values you have from Figma and which you're missing
+- **Ask the user** to provide the missing specs (e.g. "I couldn't inspect the step card description — what font size/line-height should it use?")
+- **Use design tokens** from the project's Tailwind config or CSS variables when you can identify the style name (e.g. "Body/Small" → \`text-body-sm\`) — but verify the mapping is correct
+- **Never hardcode pixel values** for typography when a design token exists — always check the project's font size definitions first
+- A wrong value that looks plausible is worse than asking — it ships silently and gets caught later
+
 ### Icons and images
 - **SVG icons**: Export from Figma as SVG, store them as reusable components in the project's existing icon directory (look for existing icon components to find the convention). Do NOT inline SVGs in page components — import them.
 - **Images**: Export from Figma with \`export_image\`, then ALWAYS run \`optimize_image\` (WebP, quality 80). Save to the project's existing image/assets directory (follow the project's convention). Use descriptive filenames and \`.webp\` extension in all references.
