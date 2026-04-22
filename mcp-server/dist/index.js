@@ -67,10 +67,7 @@ A very common pattern: a background image or color stretches full viewport width
 Implementation: the outer wrapper is full-width with the bg image, the inner content div has \`max-width\` + \`mx-auto\`.
 
 ### Page/section background color
-Always check the Fill color on parent frames — this is the page/section background. Common values:
-- \`#F4F4F4\` (light gray/ash) — NOT white, needs explicit \`bg-tertiary\` or similar
-- \`#FFFFFF\` (white) — only assume white if explicitly set
-If the background isn't \`#FFFFFF\`, you MUST set it explicitly in the implementation.
+Always check the Fill color on parent frames — this is the page/section background. Never assume white — many designs use off-white or light gray backgrounds. If the background Fill is anything other than \`#FFFFFF\`, you MUST set it explicitly. Map the hex color to the project's existing color tokens/variables (check Tailwind config, CSS variables, or theme files) rather than hardcoding hex values.
 
 ### Badge/pill components
 Small frames with: border-radius ≥ 8px, horizontal layout, small padding (4-12px), background fill, icon + text children. These are decorative labels above section titles. Check:
@@ -90,9 +87,11 @@ The output shows alignment when non-default:
 - \`Cross-axis align: CENTER\` → CSS \`align-items: center\` (cross axis)
 - Values: MIN = flex-start (default, not shown), CENTER = center, MAX = flex-end, SPACE_BETWEEN = space-between
 - Pay close attention to these — e.g. a vertical flex column with \`Main-axis align: CENTER\` means children are vertically centered within the container. Missing this causes misaligned content.
+- **Alignment takes priority over gap**: when \`Main-axis align: SPACE_BETWEEN\` is set, children are spread across the full container width — the \`Gap\` value only sets the minimum spacing. Don't use \`gap\` alone; use \`justify-between\` in CSS. Similarly, \`Cross-axis align: MAX\` means children align to the end (e.g. bottom in a horizontal flex) — don't default to \`items-center\`.
+- **Always check both axes**: a card with \`Layout: HORIZONTAL\`, \`Main-axis align: SPACE_BETWEEN\`, \`Cross-axis align: MAX\` means children are spread left-to-right AND aligned to the bottom. Implement as \`flex justify-between items-end\`.
 
 ### Content-fit vs stretched children
-When a child element is much narrower than its parent (e.g. 126px badge inside a 544px column), it should NOT stretch to fill the parent. Use \`w-fit\` or \`self-start\` in CSS. The output shows child sizes — compare them to parent sizes to catch this.
+When a child element is much narrower than its parent, it should NOT stretch to fill the parent. Use \`w-fit\`, \`self-start\`, or explicit width in CSS. The output shows child sizes — compare them to parent sizes to catch this. Common examples: badges, pills, buttons, or labels that are content-width inside wider containers.
 
 ### Reusable components
 When the same structure appears multiple times in a design (e.g. team member cards, stat cards, feature cards, badge pills), extract it into a shared component. Look for:
@@ -101,9 +100,17 @@ When the same structure appears multiple times in a design (e.g. team member car
 - Same structure used in different sections (e.g. team cards reused for Management AND Advisors)
 Create one component and map the varying data (text, images, colors) as props.
 
+### CSS shorthand vs Tailwind utility conflicts
+When a project defines custom CSS classes (e.g. \`.container { padding: 0 32px; }\`), shorthand properties like \`padding\` set ALL sides (top/right/bottom/left). If you then add Tailwind utilities like \`pb-[41px]\` on the same element, the custom CSS may override the utility depending on specificity and load order. Solutions:
+- Avoid combining custom CSS classes with Tailwind utilities that target the same property
+- Instead of using the custom class, replicate its styles with individual Tailwind utilities so all utilities coexist without conflicts
+- Always verify computed styles when mixing custom CSS and Tailwind — shorthand declarations are a common source of "silent" overrides
+- **Before implementing**: read the project's global CSS and Tailwind config to find existing container/layout classes, their max-widths, and padding values. Don't hardcode container dimensions — derive them from the project's own classes. The Figma design's frame widths may differ from the project's container max-width; what matters is that the final rendered spacing (centering margin + container padding + section padding) totals to match the Figma spec.
+
 ### Icons and images
-- **SVG icons**: Export from Figma as SVG, store in \`components/icons/\` (or similar) as React components for reuse. Do NOT inline SVGs in page components — import them.
-- **Images**: Export from Figma with \`export_image\`, then ALWAYS run \`optimize_image\` (WebP, quality 80). Save to \`public/assets/images/\` with descriptive names (e.g. \`about-story.webp\`, not \`image-01.png\`). Use \`.webp\` extension in all \`<img>\` src attributes.`,
+- **SVG icons**: Export from Figma as SVG, store them as reusable components in the project's existing icon directory (look for existing icon components to find the convention). Do NOT inline SVGs in page components — import them.
+- **Images**: Export from Figma with \`export_image\`, then ALWAYS run \`optimize_image\` (WebP, quality 80). Save to the project's existing image/assets directory (follow the project's convention). Use descriptive filenames and \`.webp\` extension in all references.
+- **Before adding assets**: check the project structure for existing icon/image directories and naming conventions. Follow what's already there.`,
 });
 // ── Tool: inspect_node ──
 server.tool('inspect_node', 'Inspect a Figma node — returns typography, colors, spacing, layout, and styles for the node and its children. Accepts a Figma URL or file_key + node_id.', {

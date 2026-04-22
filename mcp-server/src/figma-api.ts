@@ -24,6 +24,15 @@ async function figmaFetch(path: string): Promise<any> {
   if (!res.ok) {
     const text = await res.text();
     log(`API ✗ ${res.status} (${elapsed}ms)`);
+    if (res.status === 429) {
+      const retryAfter = res.headers.get('retry-after');
+      const waitSecs = retryAfter ? parseInt(retryAfter, 10) : 60;
+      throw new Error(
+        `Figma API rate limit exceeded (429). ` +
+        `Try again in ~${waitSecs} seconds. ` +
+        `Options: (1) Wait ${waitSecs}s and retry, or (2) reduce the number of concurrent API calls (use lower depth values, inspect fewer nodes at once).`
+      );
+    }
     throw new Error(`Figma API ${res.status}: ${text}`);
   }
   log(`API ✓ ${res.status} (${elapsed}ms)`);
