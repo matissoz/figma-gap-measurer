@@ -99,7 +99,11 @@ When the same structure appears multiple times in a design (e.g. team member car
 - Repeated frames with the same name (e.g. multiple "Feature Card" children)
 - Identical layout, padding, radius, and typography across siblings
 - Same structure used in different sections (e.g. team cards reused for Management AND Advisors)
-Create one component and map the varying data (text, images, colors) as props.`,
+Create one component and map the varying data (text, images, colors) as props.
+
+### Icons and images
+- **SVG icons**: Export from Figma as SVG, store in \`components/icons/\` (or similar) as React components for reuse. Do NOT inline SVGs in page components — import them.
+- **Images**: Export from Figma with \`export_image\`, then ALWAYS run \`optimize_image\` (WebP, quality 80). Save to \`public/assets/images/\` with descriptive names (e.g. \`about-story.webp\`, not \`image-01.png\`). Use \`.webp\` extension in all \`<img>\` src attributes.`,
 });
 // ── Tool: inspect_node ──
 server.tool('inspect_node', 'Inspect a Figma node — returns typography, colors, spacing, layout, and styles for the node and its children. Accepts a Figma URL or file_key + node_id.', {
