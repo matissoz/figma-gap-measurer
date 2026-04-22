@@ -82,7 +82,24 @@ Small frames with: border-radius ≥ 8px, horizontal layout, small padding (4-12
 ### Spacing: padding vs gap
 - \`itemSpacing\` in Figma = CSS \`gap\` (flexbox)
 - \`paddingTop/Right/Bottom/Left\` = CSS \`padding\`
-- These are different and must both be implemented correctly`,
+- These are different and must both be implemented correctly
+
+### Flex alignment (justify-content / align-items)
+The output shows alignment when non-default:
+- \`Main-axis align: CENTER\` → CSS \`justify-content: center\` (main axis of flex)
+- \`Cross-axis align: CENTER\` → CSS \`align-items: center\` (cross axis)
+- Values: MIN = flex-start (default, not shown), CENTER = center, MAX = flex-end, SPACE_BETWEEN = space-between
+- Pay close attention to these — e.g. a vertical flex column with \`Main-axis align: CENTER\` means children are vertically centered within the container. Missing this causes misaligned content.
+
+### Content-fit vs stretched children
+When a child element is much narrower than its parent (e.g. 126px badge inside a 544px column), it should NOT stretch to fill the parent. Use \`w-fit\` or \`self-start\` in CSS. The output shows child sizes — compare them to parent sizes to catch this.
+
+### Reusable components
+When the same structure appears multiple times in a design (e.g. team member cards, stat cards, feature cards, badge pills), extract it into a shared component. Look for:
+- Repeated frames with the same name (e.g. multiple "Feature Card" children)
+- Identical layout, padding, radius, and typography across siblings
+- Same structure used in different sections (e.g. team cards reused for Management AND Advisors)
+Create one component and map the varying data (text, images, colors) as props.`,
 });
 // ── Tool: inspect_node ──
 server.tool('inspect_node', 'Inspect a Figma node — returns typography, colors, spacing, layout, and styles for the node and its children. Accepts a Figma URL or file_key + node_id.', {

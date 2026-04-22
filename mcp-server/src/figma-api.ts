@@ -151,6 +151,16 @@ function extractLayout(node: any): string[] {
     if (node.paddingLeft || node.paddingRight || node.paddingTop || node.paddingBottom) {
       info.push(`Padding: ${node.paddingTop ?? 0} ${node.paddingRight ?? 0} ${node.paddingBottom ?? 0} ${node.paddingLeft ?? 0}`);
     }
+    // Flex alignment — maps to CSS justify-content (main axis) and align-items (cross axis)
+    if (node.primaryAxisAlignItems && node.primaryAxisAlignItems !== 'MIN') {
+      info.push(`Main-axis align: ${node.primaryAxisAlignItems}`);
+    }
+    if (node.counterAxisAlignItems && node.counterAxisAlignItems !== 'MIN') {
+      info.push(`Cross-axis align: ${node.counterAxisAlignItems}`);
+    }
+    if (node.layoutWrap === 'WRAP') {
+      info.push(`Wrap: yes`);
+    }
   }
 
   if (node.cornerRadius) info.push(`Radius: ${node.cornerRadius}px`);
