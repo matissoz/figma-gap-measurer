@@ -30,15 +30,18 @@ This plugin overlays all of that onto your design in one click. Take an annotate
 
 ## Setup
 
+> **Important:** You must use the **Figma desktop app** to import local plugins. The browser version of Figma does not support importing plugins from a manifest file. Once imported via the desktop app, the plugin will also be available in Figma for browser.
+
 1. Clone this repo
 2. Install dependencies and build:
    ```bash
    npm install
    npx tsc
    ```
-3. In Figma: **Plugins → Development → Import plugin from manifest**
-4. Point to the `manifest.json` in this folder
-5. Right-click any element → **Plugins → Design Inspector**
+3. Open the **Figma desktop app**
+4. Go to **Plugins → Development → Import plugin from manifest**
+5. Point to the `manifest.json` in this folder
+6. Right-click any element → **Plugins → Design Inspector**
 
 ## Development
 
@@ -56,7 +59,7 @@ npx tsc --watch
 ## How annotations look
 
 - **Gap lines**: Pink dashed lines with pixel values in pink badges
-- **Info tags**: Dark tooltips above elements showing dimensions, colors (hex), and typography details
+- **Info tags**: Dark tooltips showing dimensions, colors (hex + style/variable names), and typography details
 - All annotations are placed in a locked group called "🔍 Gap Measurements" that won't interfere with your design
 
 ## License
